@@ -50,4 +50,12 @@ jobs:
           name: pytest-html-report
           path: reports/
 
+      - name: Deploy to environment
+        if: success()   # only runs if previous steps succeeded
+        run: |
+          chmod +x deploy.sh
+          ./deploy.sh staging
+
+            
+
 
