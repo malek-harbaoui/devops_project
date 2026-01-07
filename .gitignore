@@ -1,0 +1,10 @@
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore pytest cache
+.pytest_cache/
+
+# Optional: other common Python ignores
+*.egg-info/
+dist/
