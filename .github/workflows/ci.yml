@@ -27,7 +27,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install allure-pytest
 
       # Step 4 — Run pytest and generate all reports
       - name: Run pytest and generate reports
@@ -43,13 +42,22 @@ jobs:
             --cov-report=html:reports/coverage-html \
             --alluredir=reports/allure
 
-      # Step 5 — Generate Allure HTML dashboard
+      # Step 5 — Install Allure CLI (required to generate HTML dashboard)
+      - name: Install Allure CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+          wget https://github.com/allure-framework/allure2/releases/download/2.21.0/allure-2.21.0.zip
+          unzip allure-2.21.0.zip -d /opt/
+          echo 'PATH=$PATH:/opt/allure-2.21.0/bin' >> $GITHUB_ENV
+
+      # Step 6 — Generate Allure HTML dashboard
       - name: Generate Allure HTML dashboard
         run: |
           mkdir -p reports/allure-html
           allure generate reports/allure -o reports/allure-html --clean
 
-      # Step 6 — Create index.html dashboard for GitHub Pages
+      # Step 7 — Create index.html dashboard for GitHub Pages
       - name: Create CI dashboard index.html
         run: |
           cat <<EOT > reports/index.html
@@ -78,7 +86,7 @@ jobs:
           </html>
           EOT
 
-      # Step 7 — Upload all reports as artifacts
+      # Step 8 — Upload all reports as artifacts
       - name: Upload test reports as artifacts
         uses: actions/upload-artifact@v4
         with:
