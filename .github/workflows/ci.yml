@@ -38,7 +38,7 @@ jobs:
             --cov-report=html:reports/coverage-html \
             --alluredir=reports/allure
 
-      - name: Upload all test reports
+      - name: Upload all test reports as artifacts
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
@@ -46,7 +46,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: test   # deploy runs only if test succeeds
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -57,6 +57,16 @@ jobs:
         run: |
           chmod +x deploy.sh
           ./deploy.sh staging
+
+      - name: Publish reports to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./reports
+          user_name: github-actions
+          user_email: github-actions@github.com
+          keep_files: true
+
 
 
 
