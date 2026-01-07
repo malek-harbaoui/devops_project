@@ -38,6 +38,34 @@ jobs:
             --cov-report=html:reports/coverage-html \
             --alluredir=reports/allure
 
+      - name: Create index.html dashboard for GitHub Pages
+        run: |
+          cat <<EOT > reports/index.html
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <title>CI Reports Dashboard</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 2rem; }
+              h1 { color: #2c3e50; }
+              ul { list-style-type: none; padding: 0; }
+              li { margin: 0.5rem 0; }
+              a { text-decoration: none; color: #3498db; }
+              a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <h1>CI Reports Dashboard</h1>
+            <ul>
+              <li><a href="pytest-report.html">Pytest HTML Report</a></li>
+              <li><a href="coverage-html/index.html">Coverage Report</a></li>
+              <li><a href="allure/index.html">Allure Dashboard</a></li>
+            </ul>
+          </body>
+          </html>
+          EOT
+
       - name: Upload all test reports as artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -67,6 +95,7 @@ jobs:
           user_name: github-actions
           user_email: github-actions@github.com
           keep_files: true
+
 
 
 
