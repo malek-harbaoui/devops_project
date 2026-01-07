@@ -62,10 +62,12 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
           publish_dir: ./reports
           user_name: github-actions
           user_email: github-actions@github.com
           keep_files: true
+
 
 
 
