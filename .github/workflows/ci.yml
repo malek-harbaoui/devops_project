@@ -24,7 +24,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+          pip install pytest-html
+          
+      - name: Debug project structure
+        run: |
+          pwd
+          ls -la
+          ls tests || echo "No tests folder"
 
-      - name: Run pytest
-        run: pytest tests/
+      - name: Run pytest and generate report
+        run: |
+          mkdir -p reports
+          pytest \
+            --html=reports/pytest-report.html \
+            --self-contained-html || true
+
+      - name: Verify HTML report exists
+        run: |
+          ls -R reports || echo "Reports folder missing"
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-html-report
+          path: reports/
+
 
