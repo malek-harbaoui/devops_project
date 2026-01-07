@@ -25,22 +25,26 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run pytest and generate HTML report
+      - name: Run pytest and generate reports
         run: |
           mkdir -p reports
           python -m pytest tests/ \
+            --junitxml=reports/junit-report.xml \
             --html=reports/pytest-report.html \
-            --self-contained-html
+            --self-contained-html \
+            --cov=. \
+            --cov-report=xml:reports/coverage.xml \
+            --cov-report=html:reports/coverage-html
 
-      - name: Upload test report
+      - name: Upload all test reports
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-html-report
+          name: test-reports
           path: reports/
 
   deploy:
     name: Deploy
-    needs: test   # THIS creates the pipeline
+    needs: test   # deploy runs only if test succeeds
     runs-on: ubuntu-latest
 
     steps:
@@ -51,6 +55,7 @@ jobs:
         run: |
           chmod +x deploy.sh
           ./deploy.sh staging
+
 
             
 
