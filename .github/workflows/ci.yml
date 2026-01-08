@@ -133,6 +133,7 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
+          from: ${{ secrets.SMTP_USERNAME }}    # <-- Add this
           subject: ${{ github.workflow }} CI Pipeline Report - Commit ${{ github.sha }} - ${{ job.status }}
           to: ${{ secrets.EMAIL_RECEIVER }}
           cc: ${{ secrets.EMAIL_CC }}
@@ -152,6 +153,7 @@ jobs:
             Best regards,
             GitHub Actions
           attachments: reports/**
+
 
  
 
