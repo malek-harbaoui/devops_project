@@ -142,8 +142,8 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: ${{ github.workflow }} CI Pipeline Report - Commit ${{ github.sha }} - ${{ job.status }}
-          to: ${{ secrets.EMAIL_RECEIVER }}
-          cc: ${{ secrets.EMAIL_CC }}
+          to: ${{ secrets.EMAIL_RECEIVER }}     # your email
+          cc: ${{ secrets.EMAIL_CC }}           # professor's email
           body: |
             Hello,
 
@@ -160,6 +160,7 @@ jobs:
             Best regards,
             GitHub Actions
           attachments: reports/**
+ 
 
 
 
