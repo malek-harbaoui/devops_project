@@ -57,7 +57,7 @@ jobs:
           mkdir -p reports/allure-html
           /opt/allure-2.21.0/bin/allure generate reports/allure -o reports/allure-html --clean
 
-      # Step 7 — Create index.html dashboard for GitHub Pages
+      # Step 7 — Create CI dashboard index.html
       - name: Create CI dashboard index.html
         run: |
           cat <<EOT > reports/index.html
@@ -99,19 +99,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1 — Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2 — Download test reports artifact
       - name: Download test reports
         uses: actions/download-artifact@v4
         with:
           name: test-reports
           path: reports
 
-      # Step 3 — Publish reports to GitHub Pages
       - name: Publish reports to GitHub Pages
+        id: deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -120,6 +118,42 @@ jobs:
           user_name: github-actions
           user_email: github-actions@github.com
           keep_files: true
+
+  send_email:
+    name: Send Test Report Email
+    needs: [test, deploy]
+    runs-on: ubuntu-latest
+    if: always()  # ensures email is sent even if previous jobs fail
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download test reports
+        uses: actions/download-artifact@v4
+        with:
+          name: test-reports
+          path: reports
+
+      - name: Send email with reports
+        uses: malek/action-send-mail@v1
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: ${{ github.workflow }} CI Pipeline Report - Commit ${{ github.sha }} - ${{ job.status }}
+          to: ${{ secrets.EMAIL_RECEIVER }}
+          cc: ${{ secrets.EMAIL_CC }}
+          body: |
+            Hello,
+
+            The latest CI/CD pipeline run has completed for commit: ${{ github.sha }}
+            Status: ${{ job.status }}
+
+            ✅ Test Results Links:
+            - Pytest HTML Report: https://malek-harbaoui.github.io/devops_project/pytest-report.html
+            - Coverage Report: h
+
 
 
 
