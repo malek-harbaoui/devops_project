@@ -117,21 +117,6 @@ jobs:
           user_email: github-actions@github.com
           keep_files: true
 
-  send_email:
-    name: Send Test Report Email
-    needs: [test, deploy]
-    runs-on: ubuntu-latest
-    if: always()  # ensures email is sent even if previous jobs fail
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download test reports
-        uses: actions/download-artifact@v4
-        with:
-          name: test-reports
-          path: reports
-
       - name: Send email with reports
         uses: dawidd6/action-send-mail@v3
         with:
@@ -163,6 +148,8 @@ jobs:
             reports/pytest-report.html
             reports/coverage.xml
             reports/allure-html.zip
+
+
 
 
 
