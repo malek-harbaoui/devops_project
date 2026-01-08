@@ -135,24 +135,32 @@ jobs:
           path: reports
 
       - name: Send email with reports
-        uses: malek/action-send-mail@v1
-        with:
-          server_address: ${{ secrets.SMTP_SERVER }}
-          server_port: ${{ secrets.SMTP_PORT }}
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
-          subject: ${{ github.workflow }} CI Pipeline Report - Commit ${{ github.sha }} - ${{ job.status }}
-          to: ${{ secrets.EMAIL_RECEIVER }}
-          cc: ${{ secrets.EMAIL_CC }}
-          body: |
-            Hello,
+  uses: dawidd6/action-send-mail@v3
+  with:
+    server_address: ${{ secrets.SMTP_SERVER }}
+    server_port: ${{ secrets.SMTP_PORT }}
+    username: ${{ secrets.SMTP_USERNAME }}
+    password: ${{ secrets.SMTP_PASSWORD }}
+    subject: ${{ github.workflow }} CI Pipeline Report - Commit ${{ github.sha }} - ${{ job.status }}
+    to: ${{ secrets.EMAIL_RECEIVER }}
+    cc: ${{ secrets.EMAIL_CC }}
+    body: |
+      Hello,
 
-            The latest CI/CD pipeline run has completed for commit: ${{ github.sha }}
-            Status: ${{ job.status }}
+      The latest CI/CD pipeline run has completed for commit: ${{ github.sha }}
+      Status: ${{ job.status }}
 
-            ✅ Test Results Links:
-            - Pytest HTML Report: https://malek-harbaoui.github.io/devops_project/pytest-report.html
-            - Coverage Report: h
+      ✅ Test Results Links:
+      - Pytest HTML Report: https://malek-harbaoui.github.io/devops_project/pytest-report.html
+      - Coverage Report: https://malek-harbaoui.github.io/devops_project/coverage-html/index.html
+      - Allure Dashboard: https://malek-harbaoui.github.io/devops_project/allure-html/index.html
+
+      Please find attached the test reports for local inspection.
+
+      Best regards,
+      GitHub Actions
+    attachments: reports/**
+
 
 
 
