@@ -79,6 +79,12 @@ jobs:
           </html>
           EOT
 
+      - name: Zip Allure HTML report for attachment
+        run: |
+          cd reports
+          zip -r allure-html.zip allure-html
+          cd ..
+
       - name: Upload test reports as artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -133,10 +139,10 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          from: ${{ secrets.SMTP_USERNAME }}    # <-- Add this
+          from: ${{ secrets.SMTP_USERNAME }}    # Must provide a "from" address
           subject: ${{ github.workflow }} CI Pipeline Report - Commit ${{ github.sha }} - ${{ job.status }}
           to: ${{ secrets.EMAIL_RECEIVER }}
-          cc: ${{ secrets.EMAIL_CC }}
+          cc: ${{ secrets.EMAIL_CC }}           # Professor email
           body: |
             Hello,
 
@@ -148,11 +154,16 @@ jobs:
             - Coverage Report: https://malek-harbaoui.github.io/devops_project/coverage-html/index.html
             - Allure Dashboard: https://malek-harbaoui.github.io/devops_project/allure-html/index.html
 
-            Please find attached the test reports for local inspection.
+            Please find attached the test reports for local inspection (JUnit XML, Pytest HTML, Coverage XML, and Allure ZIP).
 
             Best regards,
             GitHub Actions
-          attachments: reports/**
+          attachments: |
+            reports/junit-report.xml
+            reports/pytest-report.html
+            reports/coverage.xml
+            reports/allure-html.zip
+
 
 
  
